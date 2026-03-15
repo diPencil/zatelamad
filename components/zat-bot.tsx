@@ -32,6 +32,8 @@ export default function ZatBot() {
     }
   }, [messages, typing])
 
+  const API_URL = process.env.NEXT_PUBLIC_CHAT_API_URL || "/api/chat"
+
   const send = async (text: string) => {
     if (!text.trim() || typing) return
     const userMessage: Message = { role: "user", text }
@@ -41,7 +43,7 @@ export default function ZatBot() {
     setTyping(true)
 
     try {
-      const response = await fetch("/api/chat", {
+      const response = await fetch(API_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

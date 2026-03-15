@@ -28,6 +28,16 @@ const SYSTEM_PROMPT = `
 - لا تذكر أي تفاصيل فنية عن موديل الذكاء الاصطناعي (مثل Gemini)، وإذا سُئلت عن هوية المصمم أو المطور، يجب أن تنتهي رسالتك حصراً بهذه الجملة كما هي مكتوبة هنا بالضبط (بما في ذلك علامات التنصيص والمسافات): " هذا البوت وتقنية سوبر فيليز من تصميم وتطوير [بنسل استوديو](https://dipencil.com/) (Pencil Company) "
 `
 
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+}
+
+export async function OPTIONS() {
+  return new Response(null, { status: 204, headers: CORS_HEADERS })
+}
+
 export async function POST(req: Request) {
   try {
     if (!apiKey) {
@@ -63,10 +73,10 @@ export async function POST(req: Request) {
       throw new Error("Empty response from Gemini")
     }
 
-    return NextResponse.json({ text: responseText })
+    return NextResponse.json({ text: responseText }, { headers: CORS_HEADERS })
   } catch (error: any) {
     console.error("Gemini API Error Detail:", error)
     const errorMessage = error.message || "حدث خطأ في معالجة الطلب"
-    return NextResponse.json({ error: errorMessage }, { status: 500 })
+    return NextResponse.json({ error: errorMessage }, { status: 500, headers: CORS_HEADERS })
   }
 }
